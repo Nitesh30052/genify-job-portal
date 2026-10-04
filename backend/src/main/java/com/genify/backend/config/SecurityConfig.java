@@ -5,6 +5,8 @@ import com.genify.backend.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
@@ -51,19 +53,26 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public user endpoints
+                        // Allow CORS preflight requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                        .permitAll()
+
+                        // Public authentication endpoints
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login"
-                        ).permitAll()
+                        )
+                        .permitAll()
 
-                        // User-related endpoints
+                        // User endpoints
                         .requestMatchers(
                                 "/api/users/**"
-                        ).permitAll()
+                        )
+                        .permitAll()
 
-                        // All other API endpoints require JWT
-                        .anyRequest().authenticated()
+                        // Everything else requires authentication
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .addFilterBefore(
@@ -80,31 +89,34 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        // Allowed frontend origins
         configuration.setAllowedOrigins(
                 List.of(
+                        // Local development
                         "http://localhost:5173",
+
+                        // Vercel production
+                        "https://genify-job-portal.vercel.app",
+
+                        // Current Vercel preview deployment
                         "https://genify-job-portal-jhymo9-nitesh30052-projects.vercel.app"
                 )
         );
 
-        // Allowed HTTP methods
         configuration.setAllowedMethods(
                 List.of(
                         "GET",
                         "POST",
                         "PUT",
                         "DELETE",
+                        "PATCH",
                         "OPTIONS"
                 )
         );
 
-        // Allowed request headers
         configuration.setAllowedHeaders(
                 List.of("*")
         );
 
-        // Allow JWT Authorization header/cookies
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
