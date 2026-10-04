@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fb;
+  color: #111827;
+}
+
+button {
+  font-family: inherit;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Responsive Navbar */
+
+@media (max-width: 900px) {
+  nav {
+    height: auto !important;
+    min-height: 65px;
+    padding: 15px 20px !important;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  nav > div:last-child {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  nav {
+    justify-content: center !important;
+  }
+
+  nav > div:first-child {
+    width: 100%;
+    text-align: center;
+  }
+
+  nav > div:last-child {
+    gap: 6px !important;
+  }
+
+  nav button {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+
+  main {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+}
