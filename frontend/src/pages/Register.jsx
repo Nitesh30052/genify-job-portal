@@ -2,43 +2,46 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "JOB_SEEKER",
+  });
+
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     setLoading(true);
+    setMessage("");
     setError("");
 
     try {
-      const response = await api.post("/users/login", {
-        email,
-        password,
-      });
+      await api.post("/users/register", formData);
 
-      localStorage.setItem("token", response.data.token);
+      setMessage("Account created successfully! Redirecting to login...");
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: response.data.id,
-          name: response.data.name,
-          email: response.data.email,
-          role: response.data.role,
-        })
-      );
-
-      navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1200);
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Invalid email or password."
+          "Registration failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -83,11 +86,32 @@ function Login() {
               color: "#6b7280",
             }}
           >
-            Sign in to your account
+            Create your account
           </p>
         </div>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "7px",
+              fontWeight: "600",
+              color: "#374151",
+            }}
+          >
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Enter your name"
+            required
+            style={inputStyle}
+          />
+
           <label
             style={{
               display: "block",
@@ -101,8 +125,9 @@ function Login() {
 
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
             placeholder="Enter your email"
             required
             style={inputStyle}
@@ -121,12 +146,35 @@ function Login() {
 
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Create a password"
             required
+            minLength={6}
             style={inputStyle}
           />
+
+          <label
+            style={{
+              display: "block",
+              marginBottom: "7px",
+              fontWeight: "600",
+              color: "#374151",
+            }}
+          >
+            Account Type
+          </label>
+
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option value="JOB_SEEKER">Job Seeker</option>
+            <option value="RECRUITER">Recruiter</option>
+          </select>
 
           {error && (
             <p
@@ -137,6 +185,18 @@ function Login() {
               }}
             >
               {error}
+            </p>
+          )}
+
+          {message && (
+            <p
+              style={{
+                color: "#16a34a",
+                fontSize: "14px",
+                marginBottom: "15px",
+              }}
+            >
+              {message}
             </p>
           )}
 
@@ -153,56 +213,35 @@ function Login() {
               fontSize: "16px",
               fontWeight: "600",
               cursor: loading ? "not-allowed" : "pointer",
+              marginTop: "8px",
             }}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
-
-        {/* Create Account */}
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "25px",
-            paddingTop: "20px",
-            borderTop: "1px solid #e5e7eb",
-          }}
-        >
-          <p
-            style={{
-              margin: 0,
-              color: "#6b7280",
-              fontSize: "14px",
-            }}
-          >
-            Don't have an account?{" "}
-            <button
-              onClick={() => navigate("/register")}
-              style={{
-                border: "none",
-                background: "none",
-                color: "#2563eb",
-                cursor: "pointer",
-                fontWeight: "600",
-                fontSize: "14px",
-                padding: 0,
-              }}
-            >
-              Create Account
-            </button>
-          </p>
-        </div>
 
         <p
           style={{
             textAlign: "center",
-            marginTop: "20px",
-            marginBottom: 0,
-            color: "#9ca3af",
-            fontSize: "13px",
+            marginTop: "25px",
+            color: "#6b7280",
+            fontSize: "14px",
           }}
         >
-          Genify — Job Application Platform
+          Already have an account?{" "}
+          <button
+            onClick={() => navigate("/login")}
+            style={{
+              border: "none",
+              background: "none",
+              color: "#2563eb",
+              cursor: "pointer",
+              fontWeight: "600",
+              padding: 0,
+            }}
+          >
+            Login
+          </button>
         </p>
       </div>
     </div>
@@ -219,4 +258,4 @@ const inputStyle = {
   outline: "none",
 };
 
-export default Login;
+export default Register;

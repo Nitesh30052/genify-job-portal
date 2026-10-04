@@ -35,7 +35,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
                 .formLogin(form -> form.disable())
 
@@ -48,15 +50,19 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public endpoints
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login"
                         ).permitAll()
 
+                        // User endpoints
                         .requestMatchers(
                                 "/api/users/**"
                         ).permitAll()
 
+                        // All other endpoints require JWT
                         .anyRequest().authenticated()
                 )
 
@@ -75,7 +81,10 @@ public class SecurityConfig {
                 new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173",
+                        "https://genify-job-portal.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
