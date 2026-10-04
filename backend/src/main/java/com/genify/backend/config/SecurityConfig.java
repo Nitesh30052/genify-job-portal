@@ -51,18 +51,18 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public endpoints
+                        // Public user endpoints
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login"
                         ).permitAll()
 
-                        // User endpoints
+                        // User-related endpoints
                         .requestMatchers(
                                 "/api/users/**"
                         ).permitAll()
 
-                        // All other endpoints require JWT
+                        // All other API endpoints require JWT
                         .anyRequest().authenticated()
                 )
 
@@ -80,13 +80,15 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
+        // Allowed frontend origins
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173",
-                        "https://genify-job-portal.vercel.app"
+                        "https://genify-job-portal-jhymo9-nitesh30052-projects.vercel.app"
                 )
         );
 
+        // Allowed HTTP methods
         configuration.setAllowedMethods(
                 List.of(
                         "GET",
@@ -97,10 +99,12 @@ public class SecurityConfig {
                 )
         );
 
+        // Allowed request headers
         configuration.setAllowedHeaders(
                 List.of("*")
         );
 
+        // Allow JWT Authorization header/cookies
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
