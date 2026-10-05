@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import BackToDashboard from "../components/BackToDashboard";
 
@@ -7,6 +8,8 @@ function Jobs() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -36,7 +39,12 @@ function Jobs() {
         `/applications?userId=${user.id}&jobId=${jobId}`
       );
 
-      setMessage("Application submitted successfully! ✅");
+      navigate("/my-applications", {
+        state: {
+          successMessage:
+            "Application submitted successfully! ✅",
+        },
+      });
     } catch (error) {
       console.error(error);
 
@@ -91,7 +99,8 @@ function Jobs() {
               marginTop: "0",
             }}
           >
-            Discover opportunities and apply for jobs that match your skills.
+            Discover opportunities and apply for jobs that match
+            your skills.
           </p>
         </div>
 
@@ -124,9 +133,9 @@ function Jobs() {
         {message && (
           <div
             style={{
-              backgroundColor: "#ecfdf5",
-              color: "#047857",
-              border: "1px solid #a7f3d0",
+              backgroundColor: "#fef2f2",
+              color: "#b91c1c",
+              border: "1px solid #fecaca",
               padding: "14px 18px",
               borderRadius: "8px",
               marginBottom: "25px",
@@ -159,8 +168,10 @@ function Jobs() {
             }}
           >
             <h2>No jobs found</h2>
+
             <p style={{ color: "#6b7280" }}>
-              Try searching with a different title, company or location.
+              Try searching with a different title, company or
+              location.
             </p>
           </div>
         ) : (
@@ -195,11 +206,21 @@ function Jobs() {
                   {job.title}
                 </h2>
 
-                <p style={{ margin: "7px 0", color: "#374151" }}>
+                <p
+                  style={{
+                    margin: "7px 0",
+                    color: "#374151",
+                  }}
+                >
                   <strong>🏢 Company:</strong> {job.company}
                 </p>
 
-                <p style={{ margin: "7px 0", color: "#374151" }}>
+                <p
+                  style={{
+                    margin: "7px 0",
+                    color: "#374151",
+                  }}
+                >
                   <strong>📍 Location:</strong> {job.location}
                 </p>
 

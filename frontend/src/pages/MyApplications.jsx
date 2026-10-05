@@ -1,15 +1,31 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import BackToDashboard from "../components/BackToDashboard";
 
 function MyApplications() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     fetchApplications();
+
+    if (location.state?.successMessage) {
+      setSuccessMessage(location.state.successMessage);
+
+      // Remove message from browser history
+      // so it does not appear again after refresh.
+      navigate(location.pathname, {
+        replace: true,
+        state: {},
+      });
+    }
   }, []);
 
   const fetchApplications = async () => {
@@ -71,7 +87,12 @@ function MyApplications() {
 
   if (loading) {
     return (
-      <div style={{ padding: "40px", textAlign: "center" }}>
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+        }}
+      >
         <h2>Loading applications...</h2>
       </div>
     );
@@ -93,7 +114,12 @@ function MyApplications() {
       >
         <BackToDashboard />
 
-        <div style={{ marginBottom: "30px" }}>
+        {/* Page Heading */}
+        <div
+          style={{
+            marginBottom: "20px",
+          }}
+        >
           <h1
             style={{
               marginBottom: "8px",
@@ -115,6 +141,36 @@ function MyApplications() {
           </p>
         </div>
 
+        {/* Success Message */}
+        {successMessage && (
+          <div
+            style={{
+              backgroundColor: "#ecfdf5",
+              color: "#047857",
+              border: "1px solid #a7f3d0",
+              padding: "16px 18px",
+              borderRadius: "10px",
+              marginBottom: "25px",
+              fontWeight: "600",
+              fontSize: "15px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "20px",
+              }}
+            >
+              ✓
+            </span>
+
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {/* Applications */}
         {applications.length === 0 ? (
           <div
             style={{
@@ -137,7 +193,11 @@ function MyApplications() {
 
             <h2>No applications yet</h2>
 
-            <p style={{ color: "#6b7280" }}>
+            <p
+              style={{
+                color: "#6b7280",
+              }}
+            >
               You haven't applied for any jobs yet.
             </p>
           </div>
@@ -162,6 +222,7 @@ function MyApplications() {
                     "0 3px 12px rgba(0,0,0,0.06)",
                 }}
               >
+                {/* Job title + status */}
                 <div
                   style={{
                     display: "flex",
@@ -198,6 +259,7 @@ function MyApplications() {
                   </span>
                 </div>
 
+                {/* Company */}
                 <p
                   style={{
                     color: "#374151",
@@ -208,6 +270,7 @@ function MyApplications() {
                   {application.job?.company || "N/A"}
                 </p>
 
+                {/* Location */}
                 <p
                   style={{
                     color: "#374151",
@@ -218,6 +281,7 @@ function MyApplications() {
                   {application.job?.location || "N/A"}
                 </p>
 
+                {/* Applied date */}
                 <div
                   style={{
                     borderTop:
