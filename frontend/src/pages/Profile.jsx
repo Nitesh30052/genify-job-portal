@@ -1,148 +1,37 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import BackToDashboard from "../components/BackToDashboard";
-import api from "../services/api";
 
 function Profile() {
   const navigate = useNavigate();
 
-  const storedUser = JSON.parse(
-    localStorage.getItem("user")
-  );
-
-  const [user, setUser] = useState(storedUser);
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    location: "",
-    education: "",
-    skills: "",
-    experience: "",
-    resumeUrl: "",
-    linkedinUrl: "",
-    githubUrl: "",
-  });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
     if (!storedUser) {
       navigate("/login");
       return;
     }
 
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
     try {
-      const response = await api.get(
-        `/users/${storedUser.id}`
-      );
-
-      setUser(response.data);
-
-      setFormData({
-        name: response.data.name || "",
-        phone: response.data.phone || "",
-        location: response.data.location || "",
-        education: response.data.education || "",
-        skills: response.data.skills || "",
-        experience: response.data.experience || "",
-        resumeUrl: response.data.resumeUrl || "",
-        linkedinUrl:
-          response.data.linkedinUrl || "",
-        githubUrl:
-          response.data.githubUrl || "",
-      });
-
-      // Keep updated user information in localStorage
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          ...storedUser,
-          name: response.data.name,
-        })
-      );
-
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
     } catch (error) {
-      console.error(
-        "Error loading profile:",
-        error
-      );
+      console.error("Error reading user information:", error);
 
-      setError(
-        "Unable to load profile information."
-      );
+      localStorage.removeItem("user");
+      navigate("/login");
     }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-
-    setSaving(true);
-    setMessage("");
-    setError("");
-
-    try {
-      const response = await api.put(
-        `/users/${storedUser.id}/profile`,
-        formData
-      );
-
-      setUser(response.data);
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          ...storedUser,
-          name: response.data.name,
-        })
-      );
-
-      setEditing(false);
-
-      setMessage(
-        "Profile updated successfully! ✅"
-      );
-
-      setTimeout(() => {
-        setMessage("");
-      }, 3000);
-
-    } catch (error) {
-      console.error(
-        "Error updating profile:",
-        error
-      );
-
-      setError(
-        error.response?.data ||
-          "Failed to update profile."
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
+  }, [navigate]);
 
   if (!user) {
     return null;
   }
 
-  const isRecruiter =
-    user.role === "RECRUITER";
+  const isRecruiter = user.role === "RECRUITER";
 
   return (
     <div
@@ -158,6 +47,7 @@ function Profile() {
           margin: "0 auto",
         }}
       >
+        {/* Back to Dashboard */}
         <BackToDashboard />
 
         {/* Page Heading */}
@@ -182,53 +72,17 @@ function Profile() {
               color: "#6b7280",
             }}
           >
-            Manage your account and professional
-            information.
+            Manage your account information.
           </p>
         </div>
-
-        {/* Success Message */}
-        {message && (
-          <div
-            style={{
-              backgroundColor: "#ecfdf5",
-              color: "#047857",
-              border: "1px solid #a7f3d0",
-              padding: "14px 18px",
-              borderRadius: "10px",
-              marginBottom: "20px",
-              fontWeight: "600",
-            }}
-          >
-            {message}
-          </div>
-        )}
-
-        {/* Error Message */}
-        {error && (
-          <div
-            style={{
-              backgroundColor: "#fef2f2",
-              color: "#b91c1c",
-              border: "1px solid #fecaca",
-              padding: "14px 18px",
-              borderRadius: "10px",
-              marginBottom: "20px",
-              fontWeight: "600",
-            }}
-          >
-            {error}
-          </div>
-        )}
 
         {/* Profile Card */}
         <div
           style={{
-            backgroundColor: "white",
+            backgroundColor: "#ffffff",
             borderRadius: "16px",
             border: "1px solid #e5e7eb",
-            boxShadow:
-              "0 4px 15px rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
             overflow: "hidden",
           }}
         >
@@ -238,7 +92,7 @@ function Profile() {
               background:
                 "linear-gradient(135deg, #111827, #1f2937)",
               padding: "35px",
-              color: "white",
+              color: "#ffffff",
               display: "flex",
               alignItems: "center",
               gap: "20px",
@@ -260,6 +114,7 @@ function Profile() {
               👤
             </div>
 
+            {/* Name and Role */}
             <div>
               <h2
                 style={{
@@ -280,9 +135,7 @@ function Profile() {
                   fontWeight: "600",
                 }}
               >
-                {isRecruiter
-                  ? "Recruiter"
-                  : "Job Seeker"}
+                {isRecruiter ? "Recruiter" : "Job Seeker"}
               </span>
             </div>
           </div>
@@ -311,12 +164,12 @@ function Profile() {
             >
               <InfoRow
                 label="Full Name"
-                value={user.name}
+                value={user.name || "Not available"}
               />
 
               <InfoRow
                 label="Email"
-                value={user.email}
+                value={user.email || "Not available"}
               />
 
               <InfoRow
@@ -330,280 +183,19 @@ function Profile() {
 
               <InfoRow
                 label="User ID"
-                value={user.id}
+                value={user.id || "Not available"}
               />
             </div>
-
-            {/* Job Seeker Details */}
-            {!isRecruiter && (
-              <>
-                <div
-                  style={{
-                    marginTop: "35px",
-                    marginBottom: "20px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "15px",
-                  }}
-                >
-                  <div>
-                    <h3
-                      style={{
-                        margin: "0 0 5px",
-                        color: "#111827",
-                      }}
-                    >
-                      Professional Details
-                    </h3>
-
-                    <p
-                      style={{
-                        margin: "0",
-                        color: "#6b7280",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Add your details to improve
-                      your job applications.
-                    </p>
-                  </div>
-
-                  {!editing && (
-                    <button
-                      onClick={() => {
-                        setEditing(true);
-                        setMessage("");
-                        setError("");
-                      }}
-                      style={{
-                        backgroundColor: "#2563eb",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "10px 18px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Edit Profile
-                    </button>
-                  )}
-                </div>
-
-                {editing ? (
-                  <form onSubmit={handleSave}>
-                    <ProfileInput
-                      label="Full Name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Enter your full name"
-                    />
-
-                    <ProfileInput
-                      label="Phone Number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="Enter your phone number"
-                    />
-
-                    <ProfileInput
-                      label="Location"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleChange}
-                      placeholder="e.g. Vijayawada, Andhra Pradesh"
-                    />
-
-                    <ProfileInput
-                      label="Education"
-                      name="education"
-                      value={formData.education}
-                      onChange={handleChange}
-                      placeholder="e.g. B.Tech Computer Science"
-                    />
-
-                    <ProfileTextarea
-                      label="Skills"
-                      name="skills"
-                      value={formData.skills}
-                      onChange={handleChange}
-                      placeholder="e.g. Java, React, SQL, Spring Boot"
-                    />
-
-                    <ProfileTextarea
-                      label="Experience"
-                      name="experience"
-                      value={formData.experience}
-                      onChange={handleChange}
-                      placeholder="Describe your experience"
-                    />
-
-                    <ProfileInput
-                      label="Resume URL"
-                      name="resumeUrl"
-                      value={formData.resumeUrl}
-                      onChange={handleChange}
-                      placeholder="Paste your resume link"
-                    />
-
-                    <ProfileInput
-                      label="LinkedIn URL"
-                      name="linkedinUrl"
-                      value={formData.linkedinUrl}
-                      onChange={handleChange}
-                      placeholder="https://linkedin.com/in/your-profile"
-                    />
-
-                    <ProfileInput
-                      label="GitHub URL"
-                      name="githubUrl"
-                      value={formData.githubUrl}
-                      onChange={handleChange}
-                      placeholder="https://github.com/your-username"
-                    />
-
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "12px",
-                        marginTop: "25px",
-                      }}
-                    >
-                      <button
-                        type="submit"
-                        disabled={saving}
-                        style={{
-                          backgroundColor: saving
-                            ? "#9ca3af"
-                            : "#2563eb",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "8px",
-                          padding: "12px 22px",
-                          fontWeight: "600",
-                          cursor: saving
-                            ? "not-allowed"
-                            : "pointer",
-                        }}
-                      >
-                        {saving
-                          ? "Saving..."
-                          : "Save Profile"}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditing(false);
-                          setError("");
-                        }}
-                        style={{
-                          backgroundColor: "#f3f4f6",
-                          color: "#374151",
-                          border: "1px solid #d1d5db",
-                          borderRadius: "8px",
-                          padding: "12px 22px",
-                          fontWeight: "600",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: "0",
-                    }}
-                  >
-                    <InfoRow
-                      label="Phone Number"
-                      value={
-                        user.phone || "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="Location"
-                      value={
-                        user.location || "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="Education"
-                      value={
-                        user.education || "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="Skills"
-                      value={
-                        user.skills || "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="Experience"
-                      value={
-                        user.experience || "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="Resume"
-                      value={
-                        user.resumeUrl || "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="LinkedIn"
-                      value={
-                        user.linkedinUrl ||
-                        "Not added"
-                      }
-                    />
-
-                    <InfoRow
-                      label="GitHub"
-                      value={
-                        user.githubUrl ||
-                        "Not added"
-                      }
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Recruiter Information */}
-            {isRecruiter && (
-              <div
-                style={{
-                  marginTop: "30px",
-                  padding: "18px",
-                  backgroundColor: "#f9fafb",
-                  borderRadius: "10px",
-                  color: "#6b7280",
-                }}
-              >
-                Recruiter profile management can be
-                added separately.
-              </div>
-            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+/* =========================
+   INFORMATION ROW
+========================= */
 
 function InfoRow({ label, value }) {
   return (
@@ -637,95 +229,6 @@ function InfoRow({ label, value }) {
       >
         {value}
       </span>
-    </div>
-  );
-}
-
-function ProfileInput({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder,
-}) {
-  return (
-    <div
-      style={{
-        marginBottom: "18px",
-      }}
-    >
-      <label
-        style={{
-          display: "block",
-          marginBottom: "7px",
-          color: "#374151",
-          fontWeight: "600",
-        }}
-      >
-        {label}
-      </label>
-
-      <input
-        type="text"
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        style={{
-          width: "100%",
-          boxSizing: "border-box",
-          padding: "12px 14px",
-          border: "1px solid #d1d5db",
-          borderRadius: "8px",
-          fontSize: "15px",
-          outline: "none",
-        }}
-      />
-    </div>
-  );
-}
-
-function ProfileTextarea({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder,
-}) {
-  return (
-    <div
-      style={{
-        marginBottom: "18px",
-      }}
-    >
-      <label
-        style={{
-          display: "block",
-          marginBottom: "7px",
-          color: "#374151",
-          fontWeight: "600",
-        }}
-      >
-        {label}
-      </label>
-
-      <textarea
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        rows="4"
-        style={{
-          width: "100%",
-          boxSizing: "border-box",
-          padding: "12px 14px",
-          border: "1px solid #d1d5db",
-          borderRadius: "8px",
-          fontSize: "15px",
-          outline: "none",
-          resize: "vertical",
-        }}
-      />
     </div>
   );
 }
