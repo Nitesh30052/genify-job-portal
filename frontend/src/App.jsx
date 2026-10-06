@@ -19,7 +19,8 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public */}
+        {/* ================= PUBLIC ================= */}
+
         <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<Login />} />
@@ -31,7 +32,8 @@ function App() {
           element={<ForgotPassword />}
         />
 
-        {/* Logged-in users */}
+        {/* ================= LOGGED-IN USERS ================= */}
+
         <Route
           path="/dashboard"
           element={
@@ -50,7 +52,8 @@ function App() {
           }
         />
 
-        {/* Job Seeker */}
+        {/* ================= JOB SEEKER ================= */}
+
         <Route
           path="/jobs"
           element={
@@ -69,7 +72,8 @@ function App() {
           }
         />
 
-        {/* Recruiter */}
+        {/* ================= RECRUITER ================= */}
+
         <Route
           path="/post-job"
           element={
