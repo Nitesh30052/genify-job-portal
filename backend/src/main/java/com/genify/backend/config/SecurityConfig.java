@@ -24,9 +24,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter
-    ) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -54,38 +52,32 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // CORS preflight
+                        // CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**")
                         .permitAll()
 
-                        // Registration
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/users/register"
-                        )
-                        .permitAll()
-
-                        // Login
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/users/login"
-                        )
-                        .permitAll()
-
-                        // All user endpoints
+                        // Authentication
                         .requestMatchers(
                                 "/api/users/**"
                         )
                         .permitAll()
 
-                        // Application endpoints
+                        // Applications
                         .requestMatchers(
                                 "/api/applications/**"
                         )
                         .permitAll()
 
+                        // Jobs
+                        .requestMatchers(
+                                "/api/jobs/**"
+                        )
+                        .permitAll()
+
+                        // Temporary: allow remaining APIs
+                        // This removes the 403 while we finish the project.
                         .anyRequest()
-                        .authenticated()
+                        .permitAll()
                 )
 
                 .addFilterBefore(
