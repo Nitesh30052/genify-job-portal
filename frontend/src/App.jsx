@@ -10,6 +10,7 @@ import Jobs from "./pages/Jobs";
 import MyApplications from "./pages/MyApplications";
 import Applicants from "./pages/Applicants";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/Forgotpassword";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -20,8 +21,15 @@ function App() {
 
         {/* Public */}
         <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
 
         {/* Logged-in users */}
         <Route
