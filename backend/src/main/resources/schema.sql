@@ -1,0 +1,35 @@
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS applicant_name TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS applicant_email TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS phone TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS degree TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS department TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS college TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS graduation_year TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS skills TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS experience TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS resume_url TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS linkedin_url TEXT;
+
+ALTER TABLE applications
+ADD COLUMN IF NOT EXISTS github_url TEXT;

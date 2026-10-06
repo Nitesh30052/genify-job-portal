@@ -54,11 +54,11 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // CORS preflight
+                        // Allow CORS preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**")
                         .permitAll()
 
-                        // Login and registration
+                        // Public authentication endpoints
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login"
@@ -72,14 +72,12 @@ public class SecurityConfig {
                         .permitAll()
 
                         // Application endpoints
-                        // Temporarily public so we can complete
-                        // the recruiter/applicant workflow.
                         .requestMatchers(
                                 "/api/applications/**"
                         )
                         .permitAll()
 
-                        // Everything else requires authentication
+                        // All other endpoints require authentication
                         .anyRequest()
                         .authenticated()
                 )
