@@ -25,14 +25,15 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter) {
-
+            JwtAuthenticationFilter jwtAuthenticationFilter
+    ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+            HttpSecurity http
+    ) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -53,11 +54,11 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Allow CORS preflight requests
+                        // CORS preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**")
                         .permitAll()
 
-                        // Public authentication endpoints
+                        // Login and registration
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login"
@@ -67,6 +68,14 @@ public class SecurityConfig {
                         // User endpoints
                         .requestMatchers(
                                 "/api/users/**"
+                        )
+                        .permitAll()
+
+                        // Application endpoints
+                        // Temporarily public so we can complete
+                        // the recruiter/applicant workflow.
+                        .requestMatchers(
+                                "/api/applications/**"
                         )
                         .permitAll()
 
@@ -91,13 +100,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(
                 List.of(
-                        // Local development
                         "http://localhost:5173",
-
-                        // Vercel production
                         "https://genify-job-portal.vercel.app",
-
-                        // Current Vercel preview deployment
                         "https://genify-job-portal-jhymo9-nitesh30052-projects.vercel.app"
                 )
         );
