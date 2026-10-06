@@ -54,18 +54,25 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Allow CORS preflight requests
+                        // CORS preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**")
                         .permitAll()
 
-                        // Public authentication endpoints
+                        // Registration
                         .requestMatchers(
-                                "/api/users/register",
+                                HttpMethod.POST,
+                                "/api/users/register"
+                        )
+                        .permitAll()
+
+                        // Login
+                        .requestMatchers(
+                                HttpMethod.POST,
                                 "/api/users/login"
                         )
                         .permitAll()
 
-                        // User endpoints
+                        // All user endpoints
                         .requestMatchers(
                                 "/api/users/**"
                         )
@@ -77,7 +84,6 @@ public class SecurityConfig {
                         )
                         .permitAll()
 
-                        // All other endpoints require authentication
                         .anyRequest()
                         .authenticated()
                 )
