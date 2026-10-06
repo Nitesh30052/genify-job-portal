@@ -29,18 +29,74 @@ public class ApplicationService {
         this.jobRepository = jobRepository;
     }
 
-    // Create a new application
+    // =========================
+    // CREATE APPLICATION
+    // =========================
+
     public Application createApplication(
             Long userId,
             Long jobId,
+            String applicantName,
+            String applicantEmail,
+            String phone,
+            String degree,
+            String department,
+            String college,
+            String graduationYear,
+            String skills,
+            String experience,
+            String resumeUrl,
+            String linkedinUrl,
+            String githubUrl,
             String notes
     ) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(
+                        () -> new RuntimeException("User not found")
+                );
 
         Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
+                .orElseThrow(
+                        () -> new RuntimeException("Job not found")
+                );
+
+        // Basic validation
+        if (applicantName == null || applicantName.isBlank()) {
+            throw new RuntimeException("Full name is required");
+        }
+
+        if (applicantEmail == null || applicantEmail.isBlank()) {
+            throw new RuntimeException("Email is required");
+        }
+
+        if (phone == null || phone.isBlank()) {
+            throw new RuntimeException("Phone number is required");
+        }
+
+        if (degree == null || degree.isBlank()) {
+            throw new RuntimeException("Degree is required");
+        }
+
+        if (department == null || department.isBlank()) {
+            throw new RuntimeException("Department / Stream is required");
+        }
+
+        if (college == null || college.isBlank()) {
+            throw new RuntimeException("College / University is required");
+        }
+
+        if (graduationYear == null || graduationYear.isBlank()) {
+            throw new RuntimeException("Graduation year is required");
+        }
+
+        if (skills == null || skills.isBlank()) {
+            throw new RuntimeException("Skills are required");
+        }
+
+        if (resumeUrl == null || resumeUrl.isBlank()) {
+            throw new RuntimeException("Resume URL is required");
+        }
 
         Application application = new Application(
                 user,
@@ -49,25 +105,50 @@ public class ApplicationService {
                 notes
         );
 
+        application.setApplicantName(applicantName);
+        application.setApplicantEmail(applicantEmail);
+        application.setPhone(phone);
+        application.setDegree(degree);
+        application.setDepartment(department);
+        application.setCollege(college);
+        application.setGraduationYear(graduationYear);
+        application.setSkills(skills);
+        application.setExperience(experience);
+        application.setResumeUrl(resumeUrl);
+        application.setLinkedinUrl(linkedinUrl);
+        application.setGithubUrl(githubUrl);
+
         return applicationRepository.save(application);
     }
 
-    // Get application by ID
+    // =========================
+    // GET APPLICATION
+    // =========================
+
     public Optional<Application> getApplicationById(Long id) {
         return applicationRepository.findById(id);
     }
 
-    // Get all applications of a user
+    // =========================
+    // USER APPLICATIONS
+    // =========================
+
     public List<Application> getApplicationsByUser(Long userId) {
         return applicationRepository.findByUserId(userId);
     }
 
-    // Get applications for a job
+    // =========================
+    // JOB APPLICATIONS
+    // =========================
+
     public List<Application> getApplicationsByJob(Long jobId) {
         return applicationRepository.findByJobId(jobId);
     }
 
-    // Get applications by status
+    // =========================
+    // APPLICATIONS BY STATUS
+    // =========================
+
     public List<Application> getApplicationsByStatus(
             Long userId,
             ApplicationStatus status
@@ -78,39 +159,60 @@ public class ApplicationService {
         );
     }
 
-    // Update application status
+    // =========================
+    // UPDATE STATUS
+    // =========================
+
     public Application updateStatus(
             Long applicationId,
             ApplicationStatus status
     ) {
 
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+        Application application =
+                applicationRepository.findById(applicationId)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Application not found"
+                                )
+                        );
 
         application.setStatus(status);
 
         return applicationRepository.save(application);
     }
 
-    // Update notes
+    // =========================
+    // UPDATE NOTES
+    // =========================
+
     public Application updateNotes(
             Long applicationId,
             String notes
     ) {
 
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+        Application application =
+                applicationRepository.findById(applicationId)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Application not found"
+                                )
+                        );
 
         application.setNotes(notes);
 
         return applicationRepository.save(application);
     }
 
-    // Delete application
+    // =========================
+    // DELETE APPLICATION
+    // =========================
+
     public void deleteApplication(Long id) {
 
         if (!applicationRepository.existsById(id)) {
-            throw new RuntimeException("Application not found");
+            throw new RuntimeException(
+                    "Application not found"
+            );
         }
 
         applicationRepository.deleteById(id);

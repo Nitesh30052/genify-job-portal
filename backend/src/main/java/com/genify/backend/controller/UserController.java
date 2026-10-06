@@ -20,7 +20,8 @@ public class UserController {
 
     public UserController(
             UserService userService,
-            JwtService jwtService) {
+            JwtService jwtService
+    ) {
 
         this.userService = userService;
         this.jwtService = jwtService;
@@ -31,9 +32,12 @@ public class UserController {
     // =========================
 
     @PostMapping("/register")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(
+            @RequestBody User user
+    ) {
 
-        User savedUser = userService.createUser(user);
+        User savedUser =
+                userService.createUser(user);
 
         return ResponseEntity.ok(savedUser);
     }
@@ -43,14 +47,18 @@ public class UserController {
     // =========================
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(
+            @RequestBody LoginRequest request
+    ) {
 
-        Optional<User> user = userService.login(
-                request.getEmail(),
-                request.getPassword()
-        );
+        Optional<User> user =
+                userService.login(
+                        request.getEmail(),
+                        request.getPassword()
+                );
 
         if (user.isEmpty()) {
+
             return ResponseEntity
                     .status(401)
                     .body("Invalid email or password");
@@ -59,20 +67,68 @@ public class UserController {
         User loggedInUser = user.get();
 
         // Generate JWT token
-        String token = jwtService.generateToken(
-                loggedInUser.getEmail()
-        );
+        String token =
+                jwtService.generateToken(
+                        loggedInUser.getEmail()
+                );
 
-        LoginResponse response = new LoginResponse(
-                "Login successful",
-                loggedInUser.getId(),
-                loggedInUser.getName(),
-                loggedInUser.getEmail(),
-                loggedInUser.getRole().toString(),
-                token
-        );
+        LoginResponse response =
+                new LoginResponse(
+                        "Login successful",
+                        loggedInUser.getId(),
+                        loggedInUser.getName(),
+                        loggedInUser.getEmail(),
+                        loggedInUser.getRole().toString(),
+                        token
+                );
 
         return ResponseEntity.ok(response);
+    }
+
+    // =========================
+    // GET USER BY ID
+    // =========================
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(
+            @PathVariable Long id
+    ) {
+
+        Optional<User> user =
+                userService.getUserById(id);
+
+        return user
+                .map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity
+                                .notFound()
+                                .build()
+                );
+    }
+
+    // =========================
+    // UPDATE PROFILE
+    // =========================
+
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<User> updateProfile(
+            @PathVariable Long id,
+            @RequestBody User profileData
+    ) {
+
+        Optional<User> updatedUser =
+                userService.updateProfile(
+                        id,
+                        profileData
+                );
+
+        return updatedUser
+                .map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity
+                                .notFound()
+                                .build()
+                );
     }
 
     // =========================
@@ -81,7 +137,8 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(
-            @PathVariable String email) {
+            @PathVariable String email
+    ) {
 
         Optional<User> user =
                 userService.getUserByEmail(email);
@@ -101,7 +158,8 @@ public class UserController {
 
     @GetMapping("/exists/{email}")
     public ResponseEntity<Boolean> emailExists(
-            @PathVariable String email) {
+            @PathVariable String email
+    ) {
 
         return ResponseEntity.ok(
                 userService.emailExists(email)
