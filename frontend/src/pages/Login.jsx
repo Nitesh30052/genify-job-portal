@@ -54,64 +54,106 @@ function Login() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #1e3a8a, #2563eb)",
+        background:
+          "radial-gradient(circle at 15% 20%, rgba(129,140,248,0.35), transparent 35%), radial-gradient(circle at 85% 80%, rgba(192,132,252,0.35), transparent 35%), linear-gradient(135deg, #eef2ff, #f5f3ff, #e0e7ff)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "30px 20px",
+        padding: "24px 16px",
         boxSizing: "border-box",
+        fontFamily: "Inter, Arial, sans-serif",
       }}
     >
+      {/* LOGIN CARD */}
       <div
         style={{
           width: "100%",
-          maxWidth: "430px",
-          backgroundColor: "#ffffff",
-          borderRadius: "18px",
+          maxWidth: "440px",
+          backgroundColor: "rgba(255,255,255,0.96)",
+          border: "1px solid rgba(255,255,255,0.9)",
+          borderRadius: "22px",
           padding: "40px",
           boxShadow: "0 15px 40px rgba(0, 0, 0, 0.18)",
           boxSizing: "border-box",
+          boxShadow: "0 20px 60px rgba(79,70,229,0.13)",
         }}
       >
-        {/* Header */}
+        {/* LOGO */}
         <div
           style={{
             textAlign: "center",
-            marginBottom: "30px",
+            marginBottom: "32px",
           }}
         >
+          <div
+            style={{
+              width: "64px",
+              height: "64px",
+              margin: "0 auto 18px",
+              borderRadius: "19px",
+              background:
+                "linear-gradient(135deg, #4f46e5, #9333ea)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "#ffffff",
+              fontSize: "29px",
+              fontWeight: "800",
+              boxShadow: "0 8px 22px rgba(79,70,229,0.25)",
+            }}
+          >
+            G
+          </div>
+
           <h1
             style={{
-              margin: "0 0 8px",
-              fontSize: "32px",
-              fontWeight: "700",
-              color: "#111827",
+              margin: "0 0 9px",
+              fontSize: "34px",
+              fontWeight: "800",
+              letterSpacing: "-1px",
+              background:
+                "linear-gradient(135deg, #4338ca, #9333ea)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
             }}
           >
             Genify
           </h1>
 
+          <h2
+            style={{
+              margin: "0 0 9px",
+              fontSize: "21px",
+              color: "#111827",
+              fontWeight: "700",
+            }}
+          >
+            Welcome Back!
+          </h2>
+
           <p
             style={{
               margin: 0,
               color: "#6b7280",
-              fontSize: "15px",
+              fontSize: "14px",
+              lineHeight: "1.7",
             }}
           >
-            Sign in to your account
+            Sign in to continue your career journey.
           </p>
         </div>
 
-        {/* Error Message */}
+        {/* ERROR MESSAGE */}
         {error && (
           <div
+            role="alert"
             style={{
               backgroundColor: "#fef2f2",
               border: "1px solid #fecaca",
               color: "#b91c1c",
               padding: "12px 14px",
-              borderRadius: "8px",
-              marginBottom: "20px",
+              borderRadius: "10px",
+              marginBottom: "22px",
               fontSize: "14px",
               lineHeight: "1.5",
             }}
@@ -120,79 +162,74 @@ function Login() {
           </div>
         )}
 
-        {/* Login Form */}
+        {/* LOGIN FORM */}
         <form onSubmit={handleLogin}>
-          {/* Email */}
-          <div style={{ marginBottom: "20px" }}>
+          {/* EMAIL */}
+          <div style={{ marginBottom: "21px" }}>
             <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                color: "#374151",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
+              htmlFor="login-email"
+              style={labelStyle}
             >
-              Email
+              Email Address
             </label>
 
             <input
+              id="login-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="you@example.com"
+              autoComplete="email"
               required
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "13px",
-                border: "1px solid #d1d5db",
-                borderRadius: "8px",
-                fontSize: "15px",
-                outline: "none",
-                backgroundColor: "#ffffff",
+              style={inputStyle}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "#818cf8";
+                e.currentTarget.style.boxShadow =
+                  "0 0 0 3px rgba(99,102,241,0.12)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.boxShadow = "none";
               }}
             />
           </div>
 
-          {/* Password */}
-          <div style={{ marginBottom: "10px" }}>
+          {/* PASSWORD */}
+          <div style={{ marginBottom: "8px" }}>
             <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                color: "#374151",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
+              htmlFor="login-password"
+              style={labelStyle}
             >
               Password
             </label>
 
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              autoComplete="current-password"
               required
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "13px",
-                border: "1px solid #d1d5db",
-                borderRadius: "8px",
-                fontSize: "15px",
-                outline: "none",
-                backgroundColor: "#ffffff",
+              style={inputStyle}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "#818cf8";
+                e.currentTarget.style.boxShadow =
+                  "0 0 0 3px rgba(99,102,241,0.12)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.boxShadow = "none";
               }}
             />
           </div>
 
-          {/* Forgot Password */}
+          {/* FORGOT PASSWORD */}
           <div
             style={{
-              textAlign: "right",
-              marginBottom: "20px",
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "25px",
             }}
           >
             <button
@@ -200,53 +237,78 @@ function Login() {
               onClick={() => navigate("/forgot-password")}
               style={{
                 border: "none",
-                background: "none",
-                color: "#2563eb",
+                background: "transparent",
+                color: "#6366f1",
                 cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "600",
-                padding: 0,
+                fontSize: "13px",
+                fontWeight: "700",
+                padding: "5px 0",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#9333ea";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#6366f1";
               }}
             >
               Forgot Password?
             </button>
           </div>
 
-          {/* Login Button */}
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
             disabled={loading}
             style={{
               width: "100%",
-              padding: "13px",
+              padding: "15px",
               border: "none",
-              borderRadius: "8px",
-              backgroundColor: loading ? "#9ca3af" : "#111827",
+              borderRadius: "11px",
+              background: loading
+                ? "#9ca3af"
+                : "linear-gradient(135deg, #4f46e5, #7c3aed, #9333ea)",
               color: "#ffffff",
-              fontSize: "16px",
-              fontWeight: "600",
+              fontSize: "15px",
+              fontWeight: "700",
               cursor: loading ? "not-allowed" : "pointer",
-              transition: "0.2s",
+              boxShadow: loading
+                ? "none"
+                : "0 8px 20px rgba(79,70,229,0.23)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 12px 25px rgba(79,70,229,0.3)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = loading
+                ? "none"
+                : "0 8px 20px rgba(79,70,229,0.23)";
             }}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing In..." : "Sign In →"}
           </button>
         </form>
 
-        {/* Register Link */}
+        {/* REGISTER LINK */}
         <div
           style={{
-            borderTop: "1px solid #e5e7eb",
-            marginTop: "25px",
-            paddingTop: "20px",
+            borderTop: "1px solid #eef0f6",
+            marginTop: "28px",
+            paddingTop: "23px",
             textAlign: "center",
           }}
         >
           <p
             style={{
               margin: 0,
-              color: "#6b7280",
+              color: "#64748b",
               fontSize: "14px",
+              lineHeight: "1.8",
             }}
           >
             Don't have an account?{" "}
@@ -255,12 +317,11 @@ function Login() {
               onClick={() => navigate("/register")}
               style={{
                 border: "none",
-                background: "none",
-                color: "#2563eb",
+                background: "transparent",
+                color: "#6366f1",
                 cursor: "pointer",
                 fontSize: "14px",
-                fontWeight: "600",
-                fontSize: "14px",
+                fontWeight: "700",
                 padding: 0,
               }}
             >
@@ -269,31 +330,60 @@ function Login() {
           </p>
         </div>
 
-        {/* Footer */}
+        {/* FOOTER */}
         <p
           style={{
             textAlign: "center",
-            marginTop: "25px",
+            marginTop: "27px",
             marginBottom: 0,
-            color: "#9ca3af",
-            fontSize: "13px",
+            color: "#94a3b8",
+            fontSize: "12px",
           }}
         >
-          Genify — Job Application Platform
+          © {new Date().getFullYear()} Genify · Job Application Platform
         </p>
+
+        {/* BACK TO HOME */}
+        <div style={{ textAlign: "center", marginTop: "17px" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "#64748b",
+              cursor: "pointer",
+              fontSize: "13px",
+              fontWeight: "600",
+            }}
+          >
+            ← Back to Home
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
+const labelStyle = {
+  display: "block",
+  marginBottom: "9px",
+  color: "#334155",
+  fontSize: "13px",
+  fontWeight: "700",
+};
+
 const inputStyle = {
   width: "100%",
-  padding: "12px",
-  border: "1px solid #d1d5db",
-  borderRadius: "8px",
-  fontSize: "15px",
-  marginBottom: "18px",
+  boxSizing: "border-box",
+  padding: "14px",
+  border: "1px solid #e2e8f0",
+  borderRadius: "10px",
+  fontSize: "14px",
   outline: "none",
+  backgroundColor: "#f8faff",
+  color: "#111827",
+  transition: "border-color 0.2s, box-shadow 0.2s",
 };
 
 export default Login;

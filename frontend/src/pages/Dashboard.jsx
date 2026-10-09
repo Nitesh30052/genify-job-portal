@@ -10,38 +10,191 @@ function Dashboard() {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Unable to load user information:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } else {
+      navigate("/login");
     }
-  }, []);
+  }, [navigate]);
+
+  if (!user) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #eef2ff, #f5f3ff)",
+          color: "#6366f1",
+          fontFamily: "Inter, Arial, sans-serif",
+          fontSize: "16px",
+          fontWeight: "600",
+        }}
+      >
+        Loading your dashboard...
+      </div>
+    );
+  }
+
+  const isRecruiter = user.role === "RECRUITER";
+
+  const actions = isRecruiter
+    ? [
+        {
+          icon: "📝",
+          title: "Post a Job",
+          description:
+            "Create a new job opening and reach potential candidates.",
+          button: "Create Job",
+          path: "/post-job",
+          color: "#4f46e5",
+          background: "linear-gradient(135deg, #eef2ff, #e0e7ff)",
+        },
+        {
+          icon: "💼",
+          title: "My Jobs",
+          description:
+            "View and manage the job opportunities you have posted.",
+          button: "Manage Jobs",
+          path: "/my-jobs",
+          color: "#7c3aed",
+          background: "linear-gradient(135deg, #f3e8ff, #ede9fe)",
+        },
+        {
+          icon: "👤",
+          title: "My Profile",
+          description:
+            "View your account information and account type.",
+          button: "View Profile",
+          path: "/profile",
+          color: "#6d28d9",
+          background: "linear-gradient(135deg, #f5f3ff, #ede9fe)",
+        },
+      ]
+    : [
+        {
+          icon: "🔎",
+          title: "Find Jobs",
+          description:
+            "Explore available job opportunities and find your next role.",
+          button: "Explore Jobs",
+          path: "/jobs",
+          color: "#4f46e5",
+          background: "linear-gradient(135deg, #eef2ff, #e0e7ff)",
+        },
+        {
+          icon: "📋",
+          title: "My Applications",
+          description:
+            "Review your submitted applications and track their status.",
+          button: "View Applications",
+          path: "/my-applications",
+          color: "#7c3aed",
+          background: "linear-gradient(135deg, #f3e8ff, #ede9fe)",
+        },
+        {
+          icon: "👤",
+          title: "My Profile",
+          description:
+            "View your account information and account type.",
+          button: "View Profile",
+          path: "/profile",
+          color: "#6d28d9",
+          background: "linear-gradient(135deg, #f5f3ff, #ede9fe)",
+        },
+      ];
 
   return (
-    <div>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#f8faff",
+        fontFamily: "Inter, Arial, sans-serif",
+        color: "#111827",
+      }}
+    >
       <Navbar />
 
       <main
         style={{
-          maxWidth: "1100px",
+          width: "100%",
+          maxWidth: "1180px",
           margin: "0 auto",
-          padding: "45px 30px",
+          padding: "35px 24px 60px",
+          boxSizing: "border-box",
         }}
       >
-        {/* Welcome Section */}
-        {user && (
-          <section
+        {/* WELCOME SECTION */}
+        <section
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            padding: "clamp(28px, 5vw, 48px)",
+            borderRadius: "24px",
+            background:
+              "radial-gradient(circle at 90% 15%, rgba(255,255,255,0.18), transparent 30%), linear-gradient(120deg, #4338ca 0%, #6d28d9 55%, #9333ea 100%)",
+            color: "#ffffff",
+            marginBottom: "38px",
+            boxShadow: "0 15px 35px rgba(79,70,229,0.18)",
+          }}
+        >
+          <div
             style={{
-              background:
-                "linear-gradient(135deg, #111827, #1f2937)",
-              color: "white",
-              borderRadius: "16px",
-              padding: "40px",
-              marginBottom: "30px",
-              boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
+              position: "absolute",
+              width: "220px",
+              height: "220px",
+              borderRadius: "50%",
+              border: "1px solid rgba(255,255,255,0.12)",
+              right: "-55px",
+              top: "-100px",
+              pointerEvents: "none",
             }}
-          >
+          />
+
+          <div
+            style={{
+              position: "absolute",
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              border: "1px solid rgba(255,255,255,0.12)",
+              right: "55px",
+              bottom: "-100px",
+              pointerEvents: "none",
+            }}
+          />
+
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <span
+              style={{
+                display: "inline-block",
+                padding: "8px 13px",
+                borderRadius: "30px",
+                backgroundColor: "rgba(255,255,255,0.15)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                fontSize: "12px",
+                fontWeight: "700",
+                letterSpacing: "0.5px",
+                marginBottom: "20px",
+              }}
+            >
+              {isRecruiter
+                ? "RECRUITER DASHBOARD"
+                : "JOB SEEKER DASHBOARD"}
+            </span>
+
             <p
               style={{
                 margin: "0 0 8px",
-                color: "#93c5fd",
+                color: "#e0e7ff",
+                fontSize: "15px",
                 fontWeight: "600",
               }}
             >
@@ -51,117 +204,205 @@ function Dashboard() {
             <h1
               style={{
                 margin: "0 0 15px",
-                fontSize: "34px",
+                fontSize: "clamp(29px, 5vw, 43px)",
+                fontWeight: "800",
+                letterSpacing: "-1px",
+                overflowWrap: "anywhere",
               }}
             >
-              {user.name}
+              Hello, {user.name}!
             </h1>
 
             <p
               style={{
-                margin: "6px 0",
-                color: "#d1d5db",
+                margin: "0",
+                color: "#e0e7ff",
+                fontSize: "15px",
+                lineHeight: "1.8",
+                overflowWrap: "anywhere",
               }}
             >
-              {user.email}
+              {isRecruiter
+                ? "Manage your job postings and discover potential candidates."
+                : "Discover opportunities and take the next step in your career."}
             </p>
 
-            <span
+            <div
               style={{
-                display: "inline-block",
-                marginTop: "15px",
-                padding: "6px 12px",
-                borderRadius: "20px",
-                backgroundColor: "#374151",
-                fontSize: "13px",
-                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "12px",
+                marginTop: "25px",
               }}
             >
-              {user.role === "RECRUITER"
-                ? "Recruiter"
-                : "Job Seeker"}
-            </span>
-          </section>
-        )}
+              <div
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: "9px",
+                  backgroundColor: "rgba(255,255,255,0.12)",
+                  fontSize: "13px",
+                  color: "#ffffff",
+                  overflowWrap: "anywhere",
+                }}
+              >
+                ✉️ {user.email}
+              </div>
 
-        {!user && <p>Loading user information...</p>}
+              <div
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: "9px",
+                  backgroundColor: "rgba(255,255,255,0.12)",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#ffffff",
+                }}
+              >
+                ✓ {isRecruiter ? "Recruiter" : "Job Seeker"}
+              </div>
+            </div>
+          </div>
+        </section>
 
-        {/* Quick Actions */}
+        {/* QUICK ACTIONS HEADER */}
         <section>
-          <h2
-            style={{
-              marginBottom: "8px",
-              fontSize: "24px",
-            }}
-          >
-            Quick Actions
-          </h2>
+          <div style={{ marginBottom: "27px" }}>
+            <p
+              style={{
+                margin: "0 0 9px",
+                color: "#6366f1",
+                fontSize: "12px",
+                fontWeight: "800",
+                letterSpacing: "1.8px",
+              }}
+            >
+              YOUR WORKSPACE
+            </p>
 
-          <p
-            style={{
-              color: "#6b7280",
-              marginTop: "0",
-              marginBottom: "22px",
-            }}
-          >
-            Quickly access the features you use most.
-          </p>
+            <h2
+              style={{
+                margin: "0 0 10px",
+                fontSize: "clamp(25px, 4vw, 32px)",
+                fontWeight: "800",
+                color: "#111827",
+                letterSpacing: "-0.7px",
+              }}
+            >
+              Quick Actions
+            </h2>
 
+            <p
+              style={{
+                margin: 0,
+                color: "#64748b",
+                fontSize: "15px",
+                lineHeight: "1.7",
+              }}
+            >
+              {isRecruiter
+                ? "Everything you need to manage your hiring activities."
+                : "Everything you need to manage your job search."}
+            </p>
+          </div>
+
+          {/* ACTION CARDS */}
           <div
             style={{
               display: "grid",
               gridTemplateColumns:
-                "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "20px",
+                "repeat(auto-fit, minmax(min(100%, 270px), 1fr))",
+              gap: "24px",
             }}
           >
-            {/* Recruiter Actions */}
-            {user?.role === "RECRUITER" && (
-              <>
-                <ActionCard
-                  icon="📝"
-                  title="Post a Job"
-                  description="Create and publish a new job opportunity."
-                  onClick={() => navigate("/post-job")}
-                />
-
-                <ActionCard
-                  icon="💼"
-                  title="My Jobs"
-                  description="View and manage jobs posted by you."
-                  onClick={() => navigate("/my-jobs")}
-                />
-              </>
-            )}
-
-            {/* Job Seeker Actions */}
-            {user?.role === "JOB_SEEKER" && (
-              <>
-                <ActionCard
-                  icon="🔎"
-                  title="Find Jobs"
-                  description="Search and apply for available jobs."
-                  onClick={() => navigate("/jobs")}
-                />
-
-                <ActionCard
-                  icon="📋"
-                  title="My Applications"
-                  description="Track the status of your applications."
-                  onClick={() => navigate("/my-applications")}
-                />
-              </>
-            )}
-
-            <ActionCard
-              icon="👤"
-              title="Profile"
-              description="View and manage your profile information."
-              onClick={() => navigate("/profile")}
-            />
+            {actions.map((action) => (
+              <ActionCard
+                key={action.title}
+                {...action}
+                onClick={() => navigate(action.path)}
+              />
+            ))}
           </div>
         </section>
+
+        {/* BOTTOM BANNER */}
+        <section
+          style={{
+            marginTop: "38px",
+            padding: "25px 28px",
+            borderRadius: "17px",
+            border: "1px solid #e8eaff",
+            background:
+              "linear-gradient(120deg, #ffffff, #f5f3ff)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "18px",
+          }}
+        >
+          <div>
+            <h3
+              style={{
+                margin: "0 0 8px",
+                fontSize: "18px",
+                color: "#312e81",
+                fontWeight: "750",
+              }}
+            >
+              Make your next move with Genify.
+            </h3>
+
+            <p
+              style={{
+                margin: 0,
+                color: "#64748b",
+                fontSize: "14px",
+                lineHeight: "1.7",
+              }}
+            >
+              {isRecruiter
+                ? "Keep your job listings updated and review your applicants."
+                : "Explore new opportunities and keep track of your applications."}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              navigate(isRecruiter ? "/my-jobs" : "/jobs")
+            }
+            style={{
+              padding: "12px 19px",
+              border: "none",
+              borderRadius: "9px",
+              background:
+                "linear-gradient(135deg, #4f46e5, #7c3aed)",
+              color: "#ffffff",
+              fontSize: "14px",
+              fontWeight: "700",
+              cursor: "pointer",
+              boxShadow: "0 5px 15px rgba(79,70,229,0.18)",
+            }}
+          >
+            {isRecruiter ? "Manage My Jobs →" : "Explore Jobs →"}
+          </button>
+        </section>
       </main>
+
+      {/* FOOTER */}
+      <footer
+        style={{
+          padding: "24px 20px",
+          textAlign: "center",
+          borderTop: "1px solid #e8ecf5",
+          backgroundColor: "#ffffff",
+          color: "#94a3b8",
+          fontSize: "12px",
+        }}
+      >
+        © {new Date().getFullYear()} Genify · Job Application Platform
+      </footer>
     </div>
   );
 }
@@ -170,37 +411,58 @@ function ActionCard({
   icon,
   title,
   description,
+  button,
+  color,
+  background,
   onClick,
 }) {
   return (
-    <div
+    <article
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      role="link"
+      tabIndex={0}
       style={{
-        backgroundColor: "white",
-        border: "1px solid #e5e7eb",
-        borderRadius: "14px",
-        padding: "25px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        backgroundColor: "#ffffff",
+        border: "1px solid #e8ecf5",
+        borderRadius: "18px",
+        padding: "27px",
         cursor: "pointer",
-        boxShadow: "0 3px 12px rgba(0,0,0,0.06)",
+        boxShadow: "0 6px 22px rgba(15,23,42,0.04)",
         transition: "transform 0.2s, box-shadow 0.2s",
+        minWidth: 0,
+        boxSizing: "border-box",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform =
-          "translateY(-4px)";
+        e.currentTarget.style.transform = "translateY(-5px)";
         e.currentTarget.style.boxShadow =
-          "0 8px 20px rgba(0,0,0,0.10)";
+          "0 15px 35px rgba(79,70,229,0.12)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform =
-          "translateY(0)";
+        e.currentTarget.style.transform = "translateY(0)";
         e.currentTarget.style.boxShadow =
-          "0 3px 12px rgba(0,0,0,0.06)";
+          "0 6px 22px rgba(15,23,42,0.04)";
       }}
     >
       <div
         style={{
-          fontSize: "30px",
-          marginBottom: "15px",
+          width: "58px",
+          height: "58px",
+          borderRadius: "16px",
+          background,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "28px",
+          marginBottom: "22px",
         }}
       >
         {icon}
@@ -208,8 +470,10 @@ function ActionCard({
 
       <h3
         style={{
-          margin: "0 0 8px",
+          margin: "0 0 11px",
           fontSize: "19px",
+          fontWeight: "750",
+          color: "#111827",
         }}
       >
         {title}
@@ -217,15 +481,37 @@ function ActionCard({
 
       <p
         style={{
-          margin: "0",
-          color: "#6b7280",
-          lineHeight: "1.5",
+          margin: "0 0 24px",
+          color: "#64748b",
+          lineHeight: "1.8",
           fontSize: "14px",
+          flex: 1,
         }}
       >
         {description}
       </p>
-    </div>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        style={{
+          width: "100%",
+          padding: "12px 15px",
+          border: "1px solid #e0e7ff",
+          borderRadius: "9px",
+          background: "linear-gradient(135deg, #eef2ff, #f5f3ff)",
+          color,
+          fontSize: "14px",
+          fontWeight: "700",
+          cursor: "pointer",
+        }}
+      >
+        {button} →
+      </button>
+    </article>
   );
 }
 
